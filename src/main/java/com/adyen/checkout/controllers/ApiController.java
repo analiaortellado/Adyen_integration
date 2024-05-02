@@ -52,12 +52,9 @@ public class ApiController {
 
     @PostMapping("/api/paymentMethods")
     public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
-        // Step 2
+        // *Step 2
         var paymentMethodsRequest = new PaymentMethodsRequest();
-        paymentMethodsRequest.setMerchantAccount(this.applicationProperty.getMerchantAccount());
-        paymentMethodsRequest.setChannel(PaymentMethodsRequest.ChannelEnum.WEB);
 
-        log.info("Retrieving available Payment Methods from Adyen {}", paymentMethodsRequest);
         var response = paymentsApi.paymentMethods(paymentMethodsRequest);
         return ResponseEntity.ok()
                 .body(response);
@@ -65,7 +62,7 @@ public class ApiController {
 
     @PostMapping("/api/payments")
     public ResponseEntity<PaymentResponse> payments(@RequestHeader String host, @RequestBody PaymentRequest body, HttpServletRequest request) throws IOException, ApiException {
-        // Step 4
+        // *Step 4
         var paymentRequest = new PaymentRequest();
 
         // Amount
@@ -74,51 +71,14 @@ public class ApiController {
                 .value(cartService.getTotalAmount());
         paymentRequest.setAmount(amount);
 
-        paymentRequest.setMerchantAccount(this.applicationProperty.getMerchantAccount());
-        paymentRequest.setChannel(PaymentRequest.ChannelEnum.WEB);
+        // *Step 5 - For 3DS2, we need to add additional parameters to the paymentRequest
 
-        var orderRef = UUID.randomUUID().toString();
-        paymentRequest.setReference(orderRef);
-        paymentRequest.setReturnUrl(request.getScheme() + "://" + host + "/api/handleShopperRedirect?orderRef=" + orderRef); // Turns into http://localhost:8080/api/handleShopperRedirect?orderRef=...
 
-        // Step 5
-        // 3DS2
-        var authenticationData = new AuthenticationData();
-        authenticationData.setAttemptAuthentication(AuthenticationData.AttemptAuthenticationEnum.ALWAYS);
-        paymentRequest.setAuthenticationData(authenticationData);
+        // *Klarna step, we need to add additional parameters to the paymentRequest
 
-        paymentRequest.setOrigin(request.getScheme() + "://" + host); // Turns into http://localhost:8080
-        paymentRequest.setBrowserInfo(body.getBrowserInfo());
-        paymentRequest.setShopperIP(request.getRemoteAddr());
-        paymentRequest.setPaymentMethod(body.getPaymentMethod());
-
-        var billingAddress = new BillingAddress();
-        billingAddress.setCity("Amsterdam");
-        billingAddress.setCountry("NL");
-        billingAddress.setPostalCode("1012KK");
-        billingAddress.setStreet("Rokin");
-        billingAddress.setHouseNumberOrName("49");
-        paymentRequest.setBillingAddress(billingAddress);
-
-        // Klarna step
-        var items = cartService.getShoppingCart().getCartItems();
-        var lineItems = new ArrayList<LineItem>();
-        for (CartItemModel item : items) {
-            lineItems.add(new LineItem()
-                    .quantity(1L)
-                    .amountIncludingTax(item.getAmount())
-                    .description(item.getName()));
-        }
-        paymentRequest.setLineItems(lineItems);
-        paymentRequest.setCountryCode("NL");
-        paymentRequest.setShopperEmail("S.hopper@adyen.com");
-
-        // Idempotency
-        var requestOptions = new RequestOptions();
-        requestOptions.setIdempotencyKey(UUID.randomUUID().toString());
 
         log.info("PaymentsRequest {}", paymentRequest);
-        var response = paymentsApi.payments(paymentRequest, requestOptions);
+        var response = paymentsApi.payments(paymentRequest); // *Idempotency step, we need to add additional parameters to the payments
         return ResponseEntity.ok().body(response);
     }
 
@@ -133,22 +93,8 @@ public class ApiController {
     // Handle redirect during payment.
     @GetMapping("/api/handleShopperRedirect")
     public RedirectView redirect(@RequestParam(required = false) String payload, @RequestParam(required = false) String redirectResult) throws IOException, ApiException {
-        // Step 6
+        // *Step 6
         var paymentDetailsRequest = new PaymentDetailsRequest();
-
-        PaymentCompletionDetails paymentCompletionDetails = new PaymentCompletionDetails();
-
-        // Handle redirect result or payload
-        if (redirectResult != null && !redirectResult.isEmpty()) {
-            // For redirect, you are redirected to an Adyen domain to complete the 3DS2 challenge
-            // After completing the 3DS2 challenge, you get the redirect result from Adyen in the returnUrl
-            // We then pass on the redirectResult
-            paymentCompletionDetails.redirectResult(redirectResult);
-        } else if (payload != null && !payload.isEmpty()) {
-            paymentCompletionDetails.payload(payload);
-        }
-
-        paymentDetailsRequest.setDetails(paymentCompletionDetails);
 
         var paymentsDetailsResponse = paymentsApi.paymentsDetails(paymentDetailsRequest);
         log.info("PaymentsDetailsResponse {}", paymentsDetailsResponse);
@@ -157,8 +103,8 @@ public class ApiController {
         return getRedirectView(paymentsDetailsResponse);
     }
 
-    private RedirectView getRedirectView(final PaymentDetailsResponse paymentsDetailsResponse) throws ApiException, IOException {
-        // Step 7
+    private RedirectView getRedirectView(final PaymentDetailsResponse paymentsDetailsResponse) {
+        // *Step 7 - We're just showing a successful or unsuccessful redirect for now. No need to change anything here!
         var redirectURL = "/result/";
         switch (paymentsDetailsResponse.getResultCode()) {
             case AUTHORISED:

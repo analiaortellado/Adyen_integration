@@ -6,26 +6,10 @@ const type = document.getElementById("type").innerHTML;
 async function startCheckout() {
     try {
         const paymentMethodsResponse = await sendPostRequest("/api/paymentMethods");
+
+        // *Step 3 - Fill in the configuration
         const configuration = {
-            paymentMethodsResponse: paymentMethodsResponse,
-            clientKey,
-            locale: "en_US",
-            environment: "test",
-            showPayButton: true,
-            paymentMethodsConfiguration: {
-                ideal: {
-                    showImage: true,
-                },
-                card: {
-                    hasHolderName: true,
-                    holderNameRequired: true,
-                    name: "Credit or debit card",
-                    amount: {
-                        value: totalAmount,
-                        currency: "EUR",
-                    },
-                }
-            },
+            // ...
             onSubmit: async (state, component) => {
                 if (state.isValid) {
                     const response = await sendPostRequest("/api/payments", state.data);

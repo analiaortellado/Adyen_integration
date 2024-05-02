@@ -88,6 +88,7 @@ The following steps can be found in a check-list here: https://wkf.ms/3QvcJe5 - 
 2. Send a paymentMethod request to `/api/paymentMethods` get to get the available payment methods in `/controllers/ApiController`
 
 3. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`
+   * In `adyenWebImplementation.js`, enter the configuration from the documentation - we've already coded the `onSubmit` and `onAdditionalDetails` for you. You don't need to overwrite this.
 
 4. Send a payment request to `/api/payments` to initialize a payment in `/controllers/ApiController`
     * Use `cartService.getTotalAmount()` to pass the `totalAmount`, you can leave the currency as `EUR` for now
