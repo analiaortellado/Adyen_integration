@@ -72,7 +72,7 @@ In this workshop, you'll learn how to:
 
 The following steps can be found in a check-list here: https://wkf.ms/3QvcJe5 - The steps below additionally clarifies where to find the resources related the workshop.
 
-0. Build the project to see if everything works.
+0. Build the project and run it to see if it works. If you can visit `http://localhost:8080`, that means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
      * `./gradlew build` will build the project (you can use this to test the code compiles).
      * `./gradlew bootRun` will start the server on port 8080.
      * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/checkout/OnlinePaymentsApplication.java` -> Right-click and click `Debug` or `Run`.
