@@ -1,6 +1,7 @@
 package com.adyen.checkout.controllers;
 
 import com.adyen.checkout.ApplicationProperty;
+import com.adyen.model.notification.NotificationRequest;
 import com.adyen.util.HMACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.SignatureException;
-
-import com.adyen.model.notification.NotificationRequest;
 
 /**
  * REST controller for receiving Adyen webhook notifications.
@@ -30,8 +29,7 @@ public class WebhookApiController {
         this.applicationProperty = applicationProperty;
 
         if (this.applicationProperty.getHmacKey() == null) {
-            log.warn("ADYEN_HMAC_KEY is UNDEFINED (Webhook cannot be authenticated)");
-            //throw new RuntimeException("ADYEN_HMAC_KEY is UNDEFINED");
+            log.warn("ADYEN_HMAC_KEY is UNDEFINED");
         }
     }
 

@@ -1,29 +1,28 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const totalAmount = document.getElementById("totalAmount").innerHTML;
 const type = document.getElementById("type").innerHTML;
 
 // Starts the (Adyen.Web) AdyenCheckout with your specified configuration by calling the `/paymentMethods` endpoint.
 async function startCheckout() {
     try {
-        const paymentMethodsResponse = await sendPostRequest("/api/paymentMethods");
+        let paymentMethodsResponse = await sendPostRequest("/api/paymentMethods");
 
         // *Step 3 - Fill in the configuration
-        const configuration = {
+        let configuration = {
             // ...
             onSubmit: async (state, component) => {
                 if (state.isValid) {
-                    const response = await sendPostRequest("/api/payments", state.data);
+                    let response = await sendPostRequest("/api/payments", state.data);
                     handleResponse(response, component);
                 }
             },
             onAdditionalDetails: async (state, component) => {
-                const response = await sendPostRequest("/api/payments/details", state.data);
+                let response = await sendPostRequest("/api/payments/details", state.data);
                 handleResponse(response, component);
             }
         };
 
         // Start the AdyenCheckout and mount the element onto the `payment`-div.
-        const adyenCheckout = await new AdyenCheckout(configuration);
+        let adyenCheckout = await new AdyenCheckout(configuration);
         adyenCheckout.create(type).mount(document.getElementById("payment"));
     } catch (error) {
         console.error(error);

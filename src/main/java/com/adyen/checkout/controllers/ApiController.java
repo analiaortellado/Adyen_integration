@@ -2,11 +2,8 @@ package com.adyen.checkout.controllers;
 
 import com.adyen.Client;
 import com.adyen.checkout.ApplicationProperty;
-import com.adyen.checkout.models.CartItemModel;
-import com.adyen.checkout.services.CartService;
 import com.adyen.enums.Environment;
 import com.adyen.model.checkout.Amount;
-import com.adyen.model.RequestOptions;
 import com.adyen.model.checkout.*;
 import com.adyen.service.checkout.PaymentsApi;
 import com.adyen.service.exception.ApiException;
@@ -19,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * REST controller for using the Adyen payments API.
@@ -34,16 +29,12 @@ public class ApiController {
     private final PaymentsApi paymentsApi;
 
     @Autowired
-    private CartService cartService;
-
-    @Autowired
     public ApiController(ApplicationProperty applicationProperty) {
 
         this.applicationProperty = applicationProperty;
 
         if (applicationProperty.getApiKey() == null) {
             log.warn("ADYEN_API_KEY is UNDEFINED");
-            throw new RuntimeException("ADYEN_API_KEY is UNDEFINED");
         }
 
         var client = new Client(applicationProperty.getApiKey(), Environment.TEST);
@@ -68,7 +59,7 @@ public class ApiController {
         // Amount
         var amount = new Amount()
                 .currency("EUR")
-                .value(cartService.getTotalAmount());
+                .value(9998L);
         paymentRequest.setAmount(amount);
 
         // *Step 5 - For 3DS2, we need to add additional parameters to the paymentRequest
