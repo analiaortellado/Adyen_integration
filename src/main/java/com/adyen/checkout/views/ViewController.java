@@ -1,4 +1,4 @@
-package com.adyen.checkout.web;
+package com.adyen.checkout.views;
 
 import com.adyen.checkout.ApplicationProperty;
 import org.slf4j.Logger;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-public class CheckoutController {
-    private final Logger log = LoggerFactory.getLogger(CheckoutController.class);
+public class ViewController {
+    private final Logger log = LoggerFactory.getLogger(ViewController.class);
 
     @Autowired
     private ApplicationProperty applicationProperty;
 
     @Autowired
-    public CheckoutController(ApplicationProperty applicationProperty) {
+    public ViewController(ApplicationProperty applicationProperty) {
         this.applicationProperty = applicationProperty;
 
         if (this.applicationProperty.getClientKey() == null) {

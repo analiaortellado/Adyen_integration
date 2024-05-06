@@ -35,14 +35,11 @@ public class WebhookApiController {
 
     @PostMapping("/api/webhooks/notifications")
     public ResponseEntity<String> webhooks(@RequestBody String json) throws IOException {
-        // from JSON string to object
         var notificationRequest = NotificationRequest.fromJson(json);
 
-        // fetch first (and only) NotificationRequestItem
         var notificationRequestItem = notificationRequest.getNotificationItems().stream().findFirst();
 
         if (notificationRequestItem.isPresent()) {
-
             var item = notificationRequestItem.get();
 
             try {
