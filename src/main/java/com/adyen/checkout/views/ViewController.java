@@ -21,10 +21,6 @@ public class ViewController {
     @Autowired
     public ViewController(ApplicationProperty applicationProperty) {
         this.applicationProperty = applicationProperty;
-
-        if (this.applicationProperty.getClientKey() == null) {
-            log.warn("ADYEN_CLIENT_KEY is undefined");
-        }
     }
 
     @GetMapping("/")

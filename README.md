@@ -30,7 +30,7 @@ The project structure follows a Model-View-Controller (MVC) structure.
 * The java code is to be found in `src/main/java/com/adyen/checkout`
   * `/controllers`-folder contains your endpoints.
   * `/views`-folder contains the view controllers that show the pages (views).
-  * The code you need to update is in the `/controllers` folder. `ApiController.java` for API related code and `WebhookApiController` for webhook related code.
+  * The code you need to update is in the `/controllers` folder. `ApiController.java`.
   * You can add your environment variables (`ADYEN_API_KEY`, `ADYEN_MERCHANT_ACCOUNT`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY`) via the `ApplicationProperty.java` class.
 * The frontend templates are to be found in `src/main/resources/templates` and the static resources in `src/main/resources/static`
   * The code you need to update is in the `src/main/resources/static/adyenWebImplementation.js` and `src/main/resources/templates/layout.html`
@@ -66,12 +66,12 @@ In this workshop, you'll learn how to:
 
 ### Start - Step-by-step Guide:
 
-0. Build the project and run it to see if it works. If you can visit `http://localhost:8080`, that means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
-     * `./gradlew build` will build the project (you can use this to test the code compiles).
+0. Build the project and run it to see if it works. If you can visit `http://localhost:8080/hello-world`, this means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
+     * `./gradlew build` will build the project.
      * `./gradlew bootRun` will start the server on port 8080.
      * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/checkout/OnlinePaymentsApplication.java` -> Right-click and click `Debug` or `Run`.
 
-1. Install the [Java library](https://github.com/Adyen/adyen-java-api-library) by modifying the `build.gradle` file.
+1. Install the [Java library](https://github.com/Adyen/adyen-java-api-library) by adding the following line to the `build.gradle` file, build the project to pull-in the Adyen Java API Library.
 
 ```
 	implementation 'com.adyen:adyen-java-api-library:25.1.0'
