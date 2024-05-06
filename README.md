@@ -27,11 +27,11 @@ In this workshop we are not asking you to build a complete integration, but rath
 ### Project Structure
 The project structure follows a Model-View-Controller (MVC) structure.
 
-* The java code is to be found in `src/main/java/com/adyen/checkout`
+* The java code is to be found in `src/main/java/com/adyen/workshop`
   * `/controllers`-folder contains your endpoints.
   * `/views`-folder contains the view controllers that show the pages (views).
   * The code you need to update is in the `/controllers` folder. `ApiController.java`.
-  * You can add your environment variables (`ADYEN_API_KEY`, `ADYEN_MERCHANT_ACCOUNT`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY`) via the `ApplicationProperty.java` class.
+  * You can add your environment variables (`ADYEN_API_KEY`, `ADYEN_MERCHANT_ACCOUNT`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY`) in the `ApplicationConfiguration.java` class.
 * The frontend templates are to be found in `src/main/resources/templates` and the static resources in `src/main/resources/static`
   * The code you need to update is in the `src/main/resources/static/adyenWebImplementation.js` and `src/main/resources/templates/layout.html`
 * Some additional information:
@@ -40,7 +40,7 @@ The project structure follows a Model-View-Controller (MVC) structure.
 * To run the project
   * `./gradlew build` will build the project (you can use this to test the code compiles).
   * `./gradlew bootRun` will start the server on port 8080.
-  * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/checkout/OnlinePaymentsApplication.java` -> Right-click and click `Debug` or `Run`.
+  * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/workshop/MainApplication.java` -> Right-click and click `Debug` or `Run`.
 
 
 
@@ -69,7 +69,7 @@ In this workshop, you'll learn how to:
 0. Build the project and run it to see if it works. If you can visit `http://localhost:8080/hello-world`, this means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
      * `./gradlew build` will build the project.
      * `./gradlew bootRun` will start the server on port 8080.
-     * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/checkout/OnlinePaymentsApplication.java` -> Right-click and click `Debug` or `Run`.
+     * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/workshop/OnlinePaymentsApplication.java` -> Right-click and click `Debug` or `Run`.
 
 1. Install the [Java library](https://github.com/Adyen/adyen-java-api-library) by adding the following line to the `build.gradle` file, build the project to pull-in the Adyen Java API Library.
 
@@ -77,19 +77,25 @@ In this workshop, you'll learn how to:
 	implementation 'com.adyen:adyen-java-api-library:25.1.0'
 ```
 
-**Note:** For simplicity' sake, we've already included the library for you. You'll find the dependency in the `build.gradle` file already.
+2. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen
+```
+    @PostMapping("/api/paymentMethods")
+    public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
+        var paymentMethodsRequest = new PaymentMethodsRequest();
 
-2. Send a paymentMethod request to `/api/paymentMethods` get to get the available payment methods in `/controllers/ApiController`
+        paymentMethodsRequest.
+
+        var response = paymentsApi.paymentMethods(paymentMethodsRequest);
+        return ResponseEntity.ok()
+                        .body(response);
+    }
+```
 
 3. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`
-   * In `adyenWebImplementation.js`, enter the configuration from the documentation - we've already coded the `onSubmit` and `onAdditionalDetails` for you. You don't need to overwrite this.
+   * In `adyenWebImplementation.js`, enter the configuration from the documentation
 
-4. Send a payment request to `/api/payments` to initialize a payment in `/controllers/ApiController`
-    * Use `cartService.getTotalAmount()` to pass the `totalAmount`, you can leave the currency as `EUR` for now
-    * You can set the `returnUrl` to `request.getScheme() + "://" + host + "/api/handleShopperRedirect?orderRef=YOUR_ORDER_REF")`
-      * Instead `request.getScheme()`, you can also hard-code it to `http://"
-      * This url handles the shopper redirect. For it to work, you'll just need to pass the correct `orderRef`
-    * You can add an idempotency key for each request here as well.
+4. Send a payment request to `/api/payments` in `/controllers/ApiController` to initialize a payment
+    * After the payment completes, the Drop-in/Components will need to know where to redirect the user. You can set the `returnUrl` to `http://localhost:8080` for now. Ideally, this would go to a page that shows the result of the payment.
 
 5. Add 3D Secure 2 - Redirect
 

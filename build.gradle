@@ -15,10 +15,11 @@ repositories {
 }
 
 dependencies {
+	// [Step 1] Add the Adyen Java library here
+	implementation 'com.adyen:adyen-java-api-library:25.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-	// [Step 1] Add the Adyen Java library here
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

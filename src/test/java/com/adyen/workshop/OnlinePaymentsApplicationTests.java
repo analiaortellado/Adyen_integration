@@ -1,9 +1,8 @@
-package com.adyen.checkout;
+package com.adyen.workshop;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 @SpringBootTest
 class OnlinePaymentsApplicationTests {
@@ -17,7 +16,7 @@ class OnlinePaymentsApplicationTests {
     }
 
     @AfterAll
-    public static void onceExecutedAfterAll(){
+    public static void onceExecutedAfterAll() {
         System.clearProperty("ADYEN_API_KEY");
         System.clearProperty("ADYEN_MERCHANT_ACCOUNT");
         System.clearProperty("ADYEN_CLIENT_KEY");
