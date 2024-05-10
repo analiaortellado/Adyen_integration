@@ -81,7 +81,7 @@ In this workshop, you'll learn how to:
 
 3. [Get your MerchantAccount](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account)
 
-3. [Get your Adyen Client Key]https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key)
+3. [Get your Adyen Client Key](https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key)
 
 4. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen
 [Payment Methods Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=API+only&version=71#advanced-flow-post-payment-methods-request)
