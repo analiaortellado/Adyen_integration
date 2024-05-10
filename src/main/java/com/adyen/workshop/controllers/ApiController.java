@@ -59,7 +59,7 @@ public class ApiController {
                 .value(9998L);
         paymentRequest.setAmount(amount);
 
-        paymentRequest.setMerchantAccount(applicationProperties.getAdyenHmacKey());
+        paymentRequest.setMerchantAccount(applicationProperties.getAdyenMerchantAccount());
         paymentRequest.setChannel(PaymentRequest.ChannelEnum.WEB);
 
         var orderRef = UUID.randomUUID().toString();

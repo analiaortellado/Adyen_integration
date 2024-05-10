@@ -21,7 +21,7 @@ async function startCheckout() {
                     holderNameRequired: true,
                     name: "Credit or debit card",
                     amount: {
-                        value: totalAmount,
+                        value: 9998,
                         currency: "EUR",
                     },
                 }
