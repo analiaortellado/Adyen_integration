@@ -1,4 +1,4 @@
-# Build Your Own Payment Integration with Adyen
+# Build Your Own Payment Integration with Adyen - A Step-by-Step Guide
 
 ### Prerequisites
 
@@ -44,8 +44,8 @@ The project structure follows a Model-View-Controller (MVC) structure.
 
 
 
-
-# Workshop: Accepting Online payments using the `/paymentMethods`, `/payments` and `/payments/details` endpoints
+# Workshop: Accepting Online payments using the Advanced flow
+Learn how to integrate with Adyen using the `/paymentMethods`, `/payments` and `/payments/details` endpoints
 
 ### Briefing
 
@@ -64,7 +64,7 @@ In this workshop, you'll learn how to:
 5. Receive updates on the payments through webhooks
 
 
-### Start - Step-by-step Guide:
+### Start - Step-by-Step Guide:
 
 0. Build the project and run it to see if it works. If you can visit `http://localhost:8080/hello-world`, this means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
      * `./gradlew build` will build the project.
@@ -77,42 +77,38 @@ In this workshop, you'll learn how to:
 	implementation 'com.adyen:adyen-java-api-library:25.1.0'
 ```
 
-2. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen
-```
-    @PostMapping("/api/paymentMethods")
-    public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
-        var paymentMethodsRequest = new PaymentMethodsRequest();
+2. [Get your Adyen API Key](https://docs.adyen.com/development-resources/api-credentials/#generate-api-key)
 
-        paymentMethodsRequest.
+3. [Get your MerchantAccount](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account)
 
-        var response = paymentsApi.paymentMethods(paymentMethodsRequest);
-        return ResponseEntity.ok()
-                        .body(response);
-    }
-```
+3. [Get your Adyen Client Key]https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key)
 
-3. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`
+4. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen
+[Payment Methods Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=API+only&version=71#advanced-flow-post-payment-methods-request)
+
+5. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`
    * In `adyenWebImplementation.js`, enter the configuration from the documentation
+   * You can use `Web Components/Drop-in v5.63.0` for now.
+[Link Adyen.Web release notes](https://docs.adyen.com/online-payments/release-notes/?title%5B0%5D=Web+Components%2FDrop-in)
 
-4. Send a payment request to `/api/payments` in `/controllers/ApiController` to initialize a payment
+6. Send a payment request to `/api/payments` in `/controllers/ApiController` to initialize a payment
     * After the payment completes, the Drop-in/Components will need to know where to redirect the user. You can set the `returnUrl` to `http://localhost:8080` for now. Ideally, this would go to a page that shows the result of the payment.
+[Payments Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=API+only&version=71#payments-request-encrypted-card-web)
 
-5. Add 3D Secure 2 - Redirect
+7. 3D Secure 2 is an authentication protocol that provides an additional layer of verification for card-not-present (CNP) transactions.
+Pick one of these two options:
+   * [Native](https://docs.adyen.com/online-payments/3d-secure/native-3ds2/web/): The card issuer performs the authentication within your website or mobile app using passive, biometric, and two-factor authentication approaches. For more information, refer to 3D Secure 2 authentication flows.
+   * [Redirect](https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web/): Shoppers are redirected to the card issuer's site to provide additional authentication data, for example a password or an SMS verification code. The redirection might lead to lower conversion rates due to technical errors during the redirection, or shoppers dropping out of the authentication process.
 
-6. Send a `/payment/details` to finalize the payment.
+8. Send a `/payment/details` to finalize the payment.
+[Payments Details Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?tab=3d-secure-redirect-1_2#payments-details-request-6360345697)
 
-7. Handle the response from the API after the redirect.
+9. Handle the response from the API.
+[Result codes](https://docs.adyen.com/development-resources/overview-response-handling/#result-codes)
 
+You've successfully completed this workshop if you can make a payment with Cards.
 
-From here, you can add the following two payment methods [iDeal](
-https://docs.adyen.com/payment-methods/ideal/web-drop-in/) and [Klarna](
-https://docs.adyen.com/payment-methods/klarna/web-drop-in/?tab=_code_payments_code__2).
-  * If you're using Components, in `/resources/templates/index.html`, you can uncomment the lines to show the iDEAL and Klarna components.
-
-
-You've successfully completed this workshop if you can make a payment with Cards, iDEAL and Klarna.
-
-For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow.
+_Note:_ For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow.
 
 ```
 4871 0499 9999 9910
