@@ -6,17 +6,34 @@ async function startCheckout() {
     try {
         let paymentMethodsResponse = await sendPostRequest("/api/paymentMethods");
 
-        // *Step 3 - Fill in the configuration
-        let configuration = {
-            // ...
+        const configuration = {
+            paymentMethodsResponse: paymentMethodsResponse,
+            clientKey,
+            locale: "en_US",
+            environment: "test",
+            showPayButton: true,
+            paymentMethodsConfiguration: {
+                ideal: { // TODO Remove
+                    showImage: true,
+                },
+                card: {
+                    hasHolderName: true,
+                    holderNameRequired: true,
+                    name: "Credit or debit card",
+                    amount: {
+                        value: totalAmount,
+                        currency: "EUR",
+                    },
+                }
+            },
             onSubmit: async (state, component) => {
                 if (state.isValid) {
-                    let response = await sendPostRequest("/api/payments", state.data);
+                    const response = await sendPostRequest("/api/payments", state.data);
                     handleResponse(response, component);
                 }
             },
             onAdditionalDetails: async (state, component) => {
-                let response = await sendPostRequest("/api/payments/details", state.data);
+                const response = await sendPostRequest("/api/payments/details", state.data);
                 handleResponse(response, component);
             }
         };
