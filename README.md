@@ -77,22 +77,25 @@ In this workshop, you'll learn how to:
 	implementation 'com.adyen:adyen-java-api-library:25.1.0'
 ```
 
-2. [Get your Adyen API Key](https://docs.adyen.com/development-resources/api-credentials/#generate-api-key)
+2. [Get your Adyen API Key](https://docs.adyen.com/development-resources/api-credentials/#generate-api-key).
 
-3. [Get your MerchantAccount](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account)
+3. [Get your MerchantAccount](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account).
 
-3. [Get your Adyen Client Key](https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key)
+3. [Get your Adyen Client Key](https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key).
 
-4. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen
+4. Build the endpoint `/api/paymentMethods`  in `/controllers/ApiController` which retrieves the available payment methods from Adyen.
+
 [Payment Methods Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=API+only&version=71#advanced-flow-post-payment-methods-request)
 
-5. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`
+5. Add `Adyen.Web` using the embed script and stylesheet option in `/resources/templates/layout.html`.
    * In `adyenWebImplementation.js`, enter the configuration from the documentation
-   * You can use `Web Components/Drop-in v5.63.0` for now.
+   * You can use `Web Components/Drop-in v5.63.0` for now
+
 [Link Adyen.Web release notes](https://docs.adyen.com/online-payments/release-notes/?title%5B0%5D=Web+Components%2FDrop-in)
 
-6. Send a payment request to `/api/payments` in `/controllers/ApiController` to initialize a payment
+6. Send a payment request to `/api/payments` in `/controllers/ApiController` to initialize a payment.
     * After the payment completes, the Drop-in/Components will need to know where to redirect the user. You can set the `returnUrl` to `http://localhost:8080` for now. Ideally, this would go to a page that shows the result of the payment.
+
 [Payments Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=API+only&version=71#payments-request-encrypted-card-web)
 
 7. 3D Secure 2 is an authentication protocol that provides an additional layer of verification for card-not-present (CNP) transactions.
@@ -101,14 +104,16 @@ Pick one of these two options:
    * [Redirect](https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web/): Shoppers are redirected to the card issuer's site to provide additional authentication data, for example a password or an SMS verification code. The redirection might lead to lower conversion rates due to technical errors during the redirection, or shoppers dropping out of the authentication process.
 
 8. Send a `/payment/details` to finalize the payment.
+
 [Payments Details Request](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?tab=3d-secure-redirect-1_2#payments-details-request-6360345697)
 
 9. Handle the response from the API.
-[Result codes](https://docs.adyen.com/development-resources/overview-response-handling/#result-codes)
+
+[Result Codes](https://docs.adyen.com/development-resources/overview-response-handling/#result-codes)
 
 You've successfully completed this workshop if you can make a payment with Cards.
 
-_Note:_ For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow.
+**Note:** For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow.
 
 ```
 4871 0499 9999 9910
