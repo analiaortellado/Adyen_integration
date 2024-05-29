@@ -12,17 +12,20 @@ You will need a few things to get started:
 
 ## Introduction
 
-This repository is a step-by-step guide to building your own payment integration with Adyen. We will start with an Adyen.Web Drop-in/Components integration.
+This repository is a step-by-step guide to building your own payment integration with Adyen.
+We'll guide you through the steps needed to build an Adyen integration and make your first payment on TEST.
+This includes the credentials, configuration, API requests (using the Java Adyen library, `/paymentMethods`, `/payments`, `/payments/details` and 3DS2), error handling and webhooks.
 
 
 ### Context of the code repository.
 
-In this workshop, we are using Java and Spring Boot, together with a static (javascript) frontend based on a `thymeleaf` template.
-We use those because we want to reduce the amount of prerequisite knowledge (like a frontend framework) and use a Java library.
+In this workshop, we are using Java and Spring Boot, together with a static (javascript) frontend with a `thymeleaf` template (a server-side Java template engine that can process HTML).
 
-_Note: In case the static frontend environment is not to your liking, feel free to implement your own frontend solution using the framework of your choice._
+_Note: In case the static frontend environment is not to your liking, feel free to implement your own frontend solution (node) using the framework of your choice._
 
-In this workshop we are not asking you to build a complete integration, but rather to fill in the voids based on resources you can find in our docs and other online resources.
+In this workshop we are not asking you to build a complete integration from scratch, but rather to fill in the voids based on resources you can find in on the [Adyen Documentation](https://docs.adyen.com)
+or other online resources ([GitHub](https://github.com/adyen), [GitHub Examples](https://github.com/adyen-examples), [Adyen Help](https://help.adyen.com) etc).
+We use an empty Spring Boot template at the start, which you'll extend into a fully working application that can accept payments.
 
 ### Project Structure
 The project structure follows a Model-View-Controller (MVC) structure.
