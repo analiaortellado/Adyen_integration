@@ -71,25 +71,29 @@ In this workshop, you'll learn how to:
 
 ### Start - Step-by-Step Guide:
 
-0. Build the project and run it to see if it works. If you can visit `http://localhost:8080/hello-world`, this means it works! You won't be able to make a payment yet though and the application will throw an error if you try to proceed.
-     * `./gradlew bootJar` will build the project.
-     * `./gradlew bootRun` will start the application on port 8080.
+Step 0. Build the project and run it to see if it works. If you can visit `http://localhost:8080/hello-world`, `https://8080-adyenexampl-adyenstepby-xxxxxx21.ws-eu114.gitpod.io/hello-world` (gitpod) or `https://xxxx.github.dev/hello-world`, this means it works! In the next steps, we'll guide you through getting the paymentMethods and making your first payment!
+     * `./gradlew bootRun` will build and start the application on port 8080.
      * To run the project from your IDE (e.g. IntelliJ), go to `src/main/java/com/adyen/workshop/MainApplication.java` -> Right-click and click `Debug` or `Run`.
 
-1. [Get your Adyen API Key](https://docs.adyen.com/development-resources/api-credentials/#generate-api-key).
+**Step 1.** [Get your Adyen Merchant Account](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account).
 
-2. [Get your Adyen Merchant Account](https://docs.adyen.com/account/manage-account-structure/#request-merchant-account).
+**Step 2.** [Get your Adyen API Key](https://docs.adyen.com/development-resources/api-credentials/#generate-api-key).
+   - Pro-tip #1: Make sure you copy your key correctly.
+   - Pro-tip #2: Make 101% sure you copy your key correctly :)
 
-3. [Get your Adyen Client Key](https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key).
-   - Added the correct URL to my allowed origins (e.g. `http://localhost:8080`, `https://*.gitpod.io` or `https://*.github.dev`
+
+**Step 3.** [Get your Adyen Client Key](https://docs.adyen.com/development-resources/client-side-authentication/#get-your-client-key).
+   - Do **not** forget to add the correct URL to my allowed origins (e.g. `http://localhost:8080`, `https://*.gitpod.io` or `https://*.github.dev`
    This allows Adyen.Web Dropin/Components to load on your page. The `*`-symbol indicates to accept any subdomain.
 
-4. Add your keys to `ApplicationConfiguration.java` in `/main/java/com/adyen/workshop/configurations`:
+**Step 4.** Add your keys to `ApplicationConfiguration.java` in `/main/java/com/adyen/workshop/configurations`:
    - Best practice: export the vars as follows so that the Spring.Boot framework can inject your variables on startup.
+   - If you're using gitpod/codespaces, you can export your variables as follows in your terminal:
+   - If you've used gitpod before, the program will inject previously used environment variables as configured in [https://gitpod.io/variables](https://gitpod.io/variables).
 ```
-ADYEN_API_KEY=Aq42....xx
-ADYEN_CLIENT_KEY=test_yourclientkey
-ADYEN_MERCHANT_ACCOUNT=YourMerchantAccountName
+ADYEN_API_KEY="Aq42....xx"
+ADYEN_CLIENT_KEY="test_yourclientkey"
+ADYEN_MERCHANT_ACCOUNT="YourMerchantAccountName"
 ```
 
 You can now access your keys in your application anywhere:
@@ -139,7 +143,7 @@ public class DependencyInjectionConfiguration {
 </details>
 
 
-5. **Skip this step**: Install the [Java library](https://github.com/Adyen/adyen-java-api-library) by adding the following line to the `build.gradle` file, build the project to pull-in the Adyen Java API Library.
+**Step 5.** **Skip this step**: Install the [Java library](https://github.com/Adyen/adyen-java-api-library) by adding the following line to the `build.gradle` file, build the project to pull-in the Adyen Java API Library.
 For your convenience, we've already included this in the project.
 
 ```
@@ -147,13 +151,13 @@ For your convenience, we've already included this in the project.
 ```
 
 
-6. Install the latest [Adyen.Web Dropin/Components](https://docs.adyen.com/online-payments/release-notes/) by adding embed script(`.js`) and stylesheet(`.css`) to `/resources/templates/layout.html`.
+**Step 6.** Install the latest [Adyen.Web Dropin/Components](https://docs.adyen.com/online-payments/release-notes/) by adding embed script(`.js`) and stylesheet(`.css`) to `/resources/templates/layout.html`.
   - Including this allows you to access the AdyenCheckout instance in JavaScript. In this example, we use `Web Components/Drop-in v5.63.0`.
 
 
 
 
-7. Let's prepare our backend (`com/adyen/workshop/controllers`) to [retrieve a list of available payment methods](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=Drop-in&version=5.63.0&programming_language=java#web-advanced-flow-post-payment-methods-request). Go to `ApiController.java` and use the `paymentsApi` to make `/paymentMethods`-request to Adyen.
+**Step 7.** Let's prepare our backend (`com/adyen/workshop/controllers`) to [retrieve a list of available payment methods](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=Drop-in&version=5.63.0&programming_language=java#web-advanced-flow-post-payment-methods-request). Go to `ApiController.java` and use the `paymentsApi` to make `/paymentMethods`-request to Adyen.
 
 <details>
 <summary>Show me the answer</summary>
@@ -164,7 +168,7 @@ For your convenience, we've already included this in the project.
         var paymentMethodsRequest = new PaymentMethodsRequest();
 
         // Fill in the parameters below
-        //paymentMethodsRequest.set(...);
+        //paymentMethodsRequest.setMerchantAccount(...);
 
         log.info("Retrieving available Payment Methods from Adyen {}", paymentMethodsRequest);
         var response = paymentsApi.paymentMethods(paymentMethodsRequest);
@@ -175,7 +179,7 @@ For your convenience, we've already included this in the project.
 
 </details>
 
-8. On your frontend (`adyenWebImplementation.js`), let's call this new endpoint and display the payment methods to the shopper.
+**Step 8.** On your frontend (`adyenWebImplementation.js`), let's call this new endpoint and display the payment methods to the shopper.
 We automatically pass on your public `ADYEN_CLIENT_KEY` to your frontend, you can access this variable using `clientKey`.
 Create the configuration for the `AdyenCheckout`-instance, call the `/api/paymentMethods/`-endpoint, create the `AdyenCheckOut()`-instance and mount it to `"payment"-div` container.
 
@@ -238,7 +242,7 @@ startCheckout();
 
 Run your application to see whether the Dropin is showing a list of payment methods. You'll notice that the application will crash when you try to continue as we haven't implemented the payment yet.
 
-9. Let's create the `/payments`-request ([see docs](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=Drop-in&version=5.63.0&programming_language=java#post-payments-request-web)) on the backend.
+**Step 9.** Let's create the `/payments`-request ([see docs](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=Drop-in&version=5.63.0&programming_language=java#post-payments-request-web)) on the backend.
 We start by defining a new endpoint `/api/payments` that our frontend will send a request to.
 
 <details>
@@ -256,6 +260,9 @@ public ResponseEntity<PaymentResponse> payments(@RequestHeader String host, @Req
     paymentRequest.setMerchantAccount(...);
     paymentRequest.setChannel(...);
 
+    // Tip: You can get the paymentMethod from the frontend e.g. see: body.getPaymentMethod()
+    paymentRequest.setPaymentMethod(...);
+
     var orderRef = UUID.randomUUID().toString();
     paymentRequest.setReference(orderRef);
     // Once done with the payment, where shall we redirect you?
@@ -270,7 +277,7 @@ public ResponseEntity<PaymentResponse> payments(@RequestHeader String host, @Req
 
 </details>
 
-10. Best practices: Add the Idempotency key, see [documentation](https://docs.adyen.com/development-resources/api-idempotency/) to your payment request.
+**Step 10.** Best practices: Add the Idempotency key, see [documentation](https://docs.adyen.com/development-resources/api-idempotency/) to your payment request.
 ```java
 var requestOptions = new RequestOptions();
 requestOptions.setIdempotencyKey(UUID.randomUUID().toString());
@@ -280,7 +287,7 @@ var response = paymentsApi.payments(paymentRequest, requestOptions);
 return ResponseEntity.ok().body(response);
 ```
 
-11. Let's finalize the payment by calling the `/payments/details`-endpoint. We need to create another endpoint `/api/payments/details` - We take the details passed from the frontend and finalize the payment.
+**Step 11.** Let's finalize the payment by calling the `/payments/details`-endpoint. We need to create another endpoint `/api/payments/details` - We take the details passed from the frontend and finalize the payment.
 ```java
 @PostMapping("/api/payments/details")
 public ResponseEntity<PaymentDetailsResponse> paymentsDetails(@RequestBody PaymentDetailsRequest detailsRequest) throws IOException, ApiException {
@@ -292,7 +299,7 @@ public ResponseEntity<PaymentDetailsResponse> paymentsDetails(@RequestBody Payme
 ```
 
 
-12. Let's now send a request to our backend from our frontend, modify the `adyenWebImplementation.js` to override the `onSubmit(...)` function to call `/api/payments` and `onAdditionaDetails(...)` to call `/api/payments/details`.
+**Step 12.** Let's now send a request to our backend from our frontend, modify the `adyenWebImplementation.js` to override the `onSubmit(...)` function to call `/api/payments` and `onAdditionaDetails(...)` to call `/api/payments/details`.
 We've added a helper function `handleResponse(...)` to do a simple redirect.
 
 <details>
@@ -375,13 +382,13 @@ Pick one of these two options:
    * [Redirect](https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web/): Shoppers are redirected to the card issuer's site to provide additional authentication data, for example a password or an SMS verification code. The redirection might lead to lower conversion rates due to technical errors during the redirection, or shoppers dropping out of the authentication process.
 
 
-12. Let's add 3DS2 to our `/payments`-request. Note: New to 3DS2? You can read our [docs](https://docs.adyen.com/online-payments/3d-secure/) or go to this [technical blogpost](https://www.adyen.com/knowledge-hub/a-guide-to-integrating-with-adyen-web-for-3d-secure-2-payments) that will guide you through why/what.
+Let's add 3DS2 to our `/payments`-request. Note: New to 3DS2? You can read our [docs](https://docs.adyen.com/online-payments/3d-secure/) or go to this [technical blogpost](https://www.adyen.com/knowledge-hub/a-guide-to-integrating-with-adyen-web-for-3d-secure-2-payments) that will guide you through why/what.
 Go back to the `ApiController`, we'll need to [add additional properties](https://docs.adyen.com/online-payments/3d-secure/redirect-3ds2/web-drop-in/#payments-request-3ds-redirect-web) to the `PaymentRequest` in `ApiController.java` (in the function `/api/payments/`).
 
 **Note:** In this example, we use the redirect flow. You can also opt-in for the [Native flow](https://docs.adyen.com/online-payments/3d-secure/native-3ds2/web-drop-in/#make-a-payment).
 
 
-13. Let's handle the 3DS2 in our `/payments/details`-request by simply passing the `redirectResult` or `payload` in the `/payments/details`-call.
+**Step 13.** Let's handle the 3DS2 in our `/payments/details`-request by simply passing the `redirectResult` or `payload` in the `/payments/details`-call.
 
 <details>
 <summary>Show me the answer</summary>
@@ -433,7 +440,7 @@ public RedirectView redirect(@RequestParam(required = false) String payload, @Re
 
 </details>
 
-14. We'll have to update our frontend accordingly if there's an action to handle, go to `adyenWebImplementation.js` and modify the `handleResponse(...)`-function:
+**Step 14.** We'll have to update our frontend accordingly if there's an action to handle, go to `adyenWebImplementation.js` and modify the `handleResponse(...)`-function:
 
 ```js
 // Handles responses sent from your server to the client.
@@ -462,7 +469,7 @@ function handleResponse(response, component) {
 ```
 
 
-15. Handle the response from the API. There are multiple cases, for the workshop, we kept it to the minimal cases needed. See [result codes on docs](https://docs.adyen.com/development-resources/overview-response-handling/#result-codes).
+**Step 15.** Handle the response from the API. There are multiple cases, for the workshop, we kept it to the minimal cases needed. See [result codes on docs](https://docs.adyen.com/development-resources/overview-response-handling/#result-codes).
 
 ```js
 switch (response.resultCode) {
@@ -483,9 +490,9 @@ switch (response.resultCode) {
 ```
 
 
-16. Let's test this flow by making a payment using a regular flow and a 3DS flow.
+**Step 16.** Let's test this flow by making a payment using a regular flow and a 3DS flow.
 
-**Note:** For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow. You can also download the official [Adyen Test Card Extension](https://chromewebstore.google.com/detail/adyen-test-cards/icllkfleeahmemjgoibajcmeoehkeoag) to prefill your card numbers.
+**Note:** For Cards, use the following Visa Test Card number, to trigger a 3DS2 flow. You can also download the official [Adyen Test Card Extension](https://chromewebstore.google.com/detail/adyen-test-cards/icllkfleeahmemjgoibajcmeoehkeoag) to prefill your card numbers, or visit the Adyen [docs](https://docs.adyen.com/development-resources/testing/test-card-numbers/).
 
 ```
 4871 0499 9999 9910
@@ -494,8 +501,10 @@ switch (response.resultCode) {
 ```
 
 
-17. Receive webhooks by enabling webhooks in the Customer Area and creating your `/webhooks`-endpoint in `Controllers/WebhookController.java`.
-   - [Enable and verify HMAC signature](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures/)
+**Step 17.** Receive webhooks by enabling webhooks in the Customer Area and creating your `/webhooks`-endpoint in `Controllers/WebhookController.java`.
+   - [Read the docs: Enable and verify HMAC signatures](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures/)
+   - Create a standard webhook in your Customer Area.
+   - Don't forget to inject your `ADYEN_HMAC_KEY` in your `ApplicationConfiguration.java`, which you can then use to verify the HMAC signature.
    - Create a new `WebhookController.java` in `/java/com/adyen/workshop/controllers/WebhookController.java`
 
 <details>
@@ -540,12 +549,12 @@ public ResponseEntity<String> webhooks(@RequestBody String json) throws Exceptio
 
 
 
-18. Enable [iDeal](https://docs.adyen.com/payment-methods/ideal/web-drop-in/).
+**Step 18.** Enable [iDeal](https://docs.adyen.com/payment-methods/ideal/web-drop-in/).
    - Do not forget to enable the payment method in your [Customer Area](https://ca-test.adyen.com/)
    - On the frontend, modify your configuration so that it pre-selects an iDeal issuer + shows the images of the bank logos
 
 
-19. [Enable Klarna](https://docs.adyen.com/payment-methods/klarna/web-drop-in/?tab=_code_payments_code__2), we'll need to add an additional parameter in the payment request.
+**Step 19.** [Enable Klarna](https://docs.adyen.com/payment-methods/klarna/web-drop-in/?tab=_code_payments_code__2), we'll need to add an additional parameter in the payment request.
    - Do not forget to enable the payment method in your [Customer Area](https://ca-test.adyen.com/)
    - Do not forget to add lineItems to your payment-request
 

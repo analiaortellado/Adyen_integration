@@ -1,3 +1,3 @@
-gradle wrapper
-./gradlew bootJar
-./gradlew bootRun
+#gradle wrapper
+#./gradlew bootJar
+#./gradlew bootRun
