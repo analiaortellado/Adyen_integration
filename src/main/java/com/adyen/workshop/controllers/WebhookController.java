@@ -4,7 +4,6 @@ import com.adyen.model.notification.NotificationRequest;
 import com.adyen.model.notification.NotificationRequestItem;
 import com.adyen.util.HMACValidator;
 import com.adyen.workshop.configurations.ApplicationConfiguration;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,9 @@ public class WebhookController {
 
     @PostMapping("/webhooks")
     public ResponseEntity<String> webhooks(@RequestBody String json) throws Exception {
+        // from string to JSON
         var notificationRequest = NotificationRequest.fromJson(json);
+        // load first (and only) event
         var notificationRequestItem = notificationRequest.getNotificationItems().stream().findFirst();
 
         try {
