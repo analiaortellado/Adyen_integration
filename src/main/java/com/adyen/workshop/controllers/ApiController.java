@@ -2,9 +2,11 @@ package com.adyen.workshop.controllers;
 
 import com.adyen.model.RequestOptions;
 import com.adyen.model.checkout.*;
+import com.adyen.service.checkout.ModificationsApi;
 import com.adyen.workshop.configurations.ApplicationConfiguration;
 import com.adyen.service.checkout.PaymentsApi;
 import com.adyen.service.exception.ApiException;
+import com.adyen.workshop.service.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -25,10 +26,12 @@ public class ApiController {
 
     private final ApplicationConfiguration applicationConfiguration;
     private final PaymentsApi paymentsApi;
+    private final ModificationsApi modificationsApi;
 
-    public ApiController(ApplicationConfiguration applicationConfiguration, PaymentsApi paymentsApi) {
+    public ApiController(ApplicationConfiguration applicationConfiguration, PaymentsApi paymentsApi, ModificationsApi modificationsApi) {
         this.applicationConfiguration = applicationConfiguration;
         this.paymentsApi = paymentsApi;
+        this.modificationsApi = modificationsApi;
     }
 
     @GetMapping("/hello-world")
@@ -52,11 +55,13 @@ public class ApiController {
 
     @PostMapping("/api/payments")
     public ResponseEntity<PaymentResponse> payments(@RequestHeader String host, @RequestBody PaymentRequest body, HttpServletRequest request) throws IOException, ApiException {
+
+        // define PaymentRequest
         var paymentRequest = new PaymentRequest();
 
         var amount = new Amount()
                 .currency("EUR")
-                .value(9998L);
+                .value(9999L);
         paymentRequest.setAmount(amount);
 
         paymentRequest.setMerchantAccount(applicationConfiguration.getAdyenMerchantAccount());
@@ -84,18 +89,6 @@ public class ApiController {
         billingAddress.setHouseNumberOrName("49");
         paymentRequest.setBillingAddress(billingAddress);
 
-        // Klarna step
-        var lineItems = new ArrayList<LineItem>();
-        lineItems.add(new LineItem()
-            .quantity(1L)
-            .amountIncludingTax(4999L)
-            .description("headphones"));
-        lineItems.add(new LineItem()
-            .quantity(1L)
-            .amountIncludingTax(4999L)
-            .description("sunglasses"));
-
-        paymentRequest.setLineItems(lineItems);
         paymentRequest.setCountryCode("NL");
         paymentRequest.setShopperEmail("S.hopper@adyen.com");
 
@@ -103,17 +96,24 @@ public class ApiController {
         var requestOptions = new RequestOptions();
         requestOptions.setIdempotencyKey(UUID.randomUUID().toString());
 
+        // make payment
         log.info("PaymentsRequest {}", paymentRequest);
         var response = paymentsApi.payments(paymentRequest, requestOptions);
+        log.info("PaymentsResponse {}", response);
+
+        SessionManager.setPspReference(response.getPspReference());
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/api/payments/details")
     public ResponseEntity<PaymentDetailsResponse> paymentsDetails(@RequestBody PaymentDetailsRequest detailsRequest) throws IOException, ApiException {
+        // submit payment details
+
         log.info("PaymentDetailsRequest {}", detailsRequest);
         var response = paymentsApi.paymentsDetails(detailsRequest);
-        return ResponseEntity.ok()
-                .body(response);
+        log.info("PaymentsResponse {}", response);
+        SessionManager.setPspReference(response.getPspReference());
+        return ResponseEntity.ok().body(response);
     }
 
     // Handle redirect during payment.
@@ -162,4 +162,28 @@ public class ApiController {
         }
         return new RedirectView(redirectURL + "?reason=" + paymentsDetailsResponse.getResultCode());
     }
+
+    @PostMapping("/api/refund")
+    public ResponseEntity<PaymentRefundResponse> refund() throws Exception {
+
+        PaymentRefundRequest paymentRefundRequest = new PaymentRefundRequest();
+        Amount amount = new Amount();
+        amount.setCurrency("EUR");
+        amount.setValue(9999L);
+        paymentRefundRequest.setAmount(amount);
+        paymentRefundRequest.setMerchantAccount(applicationConfiguration.getAdyenMerchantAccount());
+        paymentRefundRequest.setReference("YOUR_UNIQUE_REFERENCE_REFUND");
+
+        String paymentPspReference = SessionManager.getPspReference();
+
+        if(paymentPspReference == null) {
+            return ResponseEntity.unprocessableEntity().body(null);
+        }
+
+        PaymentRefundResponse response = modificationsApi.refundCapturedPayment(paymentPspReference, paymentRefundRequest);
+        log.info("PaymentRefundResponse {}", response);
+
+        return ResponseEntity.ok().body(response);
+    }
+
 }
