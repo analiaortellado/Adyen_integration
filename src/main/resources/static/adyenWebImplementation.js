@@ -4,8 +4,10 @@ const type = document.getElementById("type").innerHTML;
 // Starts the (Adyen.Web) AdyenCheckout with your specified configuration by calling the `/paymentMethods` endpoint.
 async function startCheckout() {
     try {
+        // call `/paymentMethods` endpoint
         let paymentMethodsResponse = await sendPostRequest("/api/paymentMethods");
 
+        // configure drop-in
         const configuration = {
             paymentMethodsResponse: paymentMethodsResponse,
             clientKey,
@@ -18,7 +20,7 @@ async function startCheckout() {
                     holderNameRequired: true,
                     name: "Credit or debit card",
                     amount: {
-                        value: 9998,
+                        value: 9999,
                         currency: "EUR",
                     },
                 }
@@ -35,7 +37,7 @@ async function startCheckout() {
             }
         };
 
-        // Start the AdyenCheckout and mount the element onto the `payment`-div.
+        // Initiate AdyenCheckout and mount the element onto the `payment`-div.
         let adyenCheckout = await new AdyenCheckout(configuration);
         adyenCheckout.create(type).mount(document.getElementById("payment"));
     } catch (error) {
