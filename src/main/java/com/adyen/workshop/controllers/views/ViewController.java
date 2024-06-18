@@ -1,6 +1,7 @@
 package com.adyen.workshop.controllers.views;
 
 import com.adyen.workshop.configurations.ApplicationConfiguration;
+import com.adyen.workshop.service.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -49,4 +50,12 @@ public class ViewController {
         model.addAttribute("clientKey", this.applicationConfiguration.getAdyenClientKey());
         return "redirect";
     }
+
+    @GetMapping("/refund")
+    public String refund(Model model) {
+        String pspreference = SessionManager.getPspReference();
+        model.addAttribute("pspreference", pspreference);
+        return "refund";
+    }
+
 }

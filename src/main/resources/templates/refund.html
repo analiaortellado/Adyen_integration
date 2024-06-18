@@ -1,0 +1,69 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Ask a Refund</title>
+
+    <script>
+        function submitRefund() {
+            const pspreference = document.getElementById('pspreference').value;
+
+            fetch('/api/refund', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pspReference: pspreference })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle response data
+                    console.log('Success:', data);
+                    const messageDiv = document.getElementById('message');
+                    messageDiv.textContent = 'Refund processed successfully!  Status: ' + data.status +
+                    ' pspReference: ' + data.pspReference;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    const messageDiv = document.getElementById('message');
+                    messageDiv.textContent = 'An error occurred. Please try again.';
+                });
+        }
+    </script>
+
+</head>
+<body>
+<div layout:fragment="content" >
+    <div class='main-container'>
+        <div id="pspreference" class="hidden" th:text="${pspreference}"></div>
+
+        <div class="refund-container">
+
+            <div th:if="${pspreference == null }">
+                No payment(s) to refund
+            </div>
+
+            <div th:if="${pspreference != null }">
+                <table width="80%">
+                    <tr>
+                        <td><img src="/images/sunglasses.png" width="80" height="80"/> </td>
+                        <td>99.99€</td>
+                        <td th:text="${pspreference}"></td>
+                        <td>
+                            <form id="refundForm">
+                                <button type="button" class="styled-button" onclick="submitRefund()">Refund</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="message" class="message"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>

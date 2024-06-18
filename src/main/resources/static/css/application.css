@@ -203,7 +203,8 @@ a:hover {
     align-items: center;
 }
 
-.info {
+
+.refund-container {
     margin-top: 10%;
     color: #00112c;
 }
@@ -428,3 +429,22 @@ a:hover {
 }
 
 /* end Status page */
+
+.styled-button {
+    background-color: lightgreen;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    padding: 4px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    margin: 2px 2px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.styled-button:hover {
+    background-color: green;
+}
